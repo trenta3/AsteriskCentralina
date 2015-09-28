@@ -1,0 +1,26 @@
+#!/usr/bin/ruby
+#Usage: send-recording-to-list list-number recording-file
+require 'csv'
+
+if (ARGV.length < 2)
+   print "<Insufficient Arguments>"
+   exit 0
+end
+
+CSV.foreach("/etc/asterisk/calllist/dbs/#{ARGV[0]}") do |iscritto|
+  File.open("/var/spool/asterisk/outgoing/#{Time.now.to_i}-#{iscritto[0]}.call", "w") do |f|
+    f << "Channel:SIP/8697/#{iscritto[0]}\n"
+    f << "\n"
+    f << "MaxRetries:2\n"
+    f << "RetryTime:60\n"
+    f << "WaitTime:30\n"
+    f << "\n"
+    f << "Application:Playback\n"
+    f << "Data:/etc/asterisk/calllist/recordings/#{ARGV[1]}\n"
+    f << "Callerid:Calling List Service <8697>\n"
+    f << ""
+  end
+end
+
+print "<Done>"
+exit 0

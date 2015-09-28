@@ -1,0 +1,23 @@
+#!/usr/bin/ruby
+#Usage: get-field-from-db db-name id-of-entry field-number
+require 'csv'
+
+if (ARGV.length < 3)
+   print "<Insufficient Arguments>"
+   exit 0
+end
+
+CSV.foreach("/etc/asterisk/calllist/dbs/#{ARGV[0]}") do |row|
+  if (row[0] == ARGV[1])
+    if (row.length <= Integer(ARGV[2]))
+	print "<Field not exists>"
+	exit 0
+    else
+	print "#{row[Integer(ARGV[2])]}"
+	exit 0
+    end
+  end
+end
+print "<No Record Match>"
+exit 0
+																		

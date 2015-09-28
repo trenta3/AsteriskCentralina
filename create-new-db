@@ -1,0 +1,12 @@
+#!/usr/bin/ruby
+#Usage: create-new-db db-name
+
+if (ARGV.length < 1)
+   print "<Insufficient Arguments>"
+   exit 0
+end
+
+File.open("/etc/asterisk/calllist/dbs/#{ARGV[0]}", "w") {|f| }
+print "<Database created>"
+exit 0
+

@@ -1,0 +1,18 @@
+#!/usr/bin/ruby
+#Usage: is-id-in-db db-name id-to-search
+require 'csv'
+
+if (ARGV.length < 2)
+  print "<Insufficient Arguments>"
+  exit 0
+end
+
+CSV.foreach("/etc/asterisk/calllist/dbs/#{ARGV[0]}") do |row|
+  if (row[0] == ARGV[1])
+    print "<True>"
+    exit 0
+  end
+end
+print "<False>"
+exit 0
+						     

@@ -1,0 +1,42 @@
+#!/usr/bin/ruby
+#Usage: mod-entry-in-db db-name id-of-entry (new-fields)
+require 'csv'
+
+if (ARGV.length < 2)
+  print "<Insufficient Arguments>"
+  exit 0
+end
+
+#Controlliamo prima che sia presente
+res = `/etc/asterisk/calllist/is-id-in-db #{ARGV[0]} #{ARGV[1]}`
+if (res == "<False>\n")
+  print "<No Record Match>"
+  exit 0
+end
+
+#Raccogliamo le informazioni del nuovo record
+fields = [];
+for i in 1...(ARGV.length)
+  fields << ARGV[i];
+end
+
+#Altrimenti lo modifichiamo
+table = CSV.read("dbs/#{ARGV[0]}");
+
+table = table.map do |row|
+  if (row[0] == ARGV[1])
+    fields
+  else
+    row
+  end
+end
+
+CSV.open("dbs/#{ARGV[0]}", "w") do |csv|
+  table.each do |row|
+    csv << row;
+  end
+end
+print "<Modified>"
+exit 0
+
+					     

@@ -1,0 +1,28 @@
+#!/usr/bin/ruby
+#Usage: del-entry-from-db db-name id-of-entry
+require 'csv'
+
+if (ARGV.length < 2)
+   print "<Insufficient Arguments>"
+   exit 0
+end
+
+table = CSV.read("/etc/asterisk/calllist/dbs/#{ARGV[0]}");
+
+something = table.reject! do |row|
+  row[0] == ARGV[1];
+end
+
+if (something == nil)
+   print "<No Record Match>"
+   exit 0
+end
+
+CSV.open("/etc/asterisk/calllist/dbs/#{ARGV[0]}", "w") do |csv|
+  table.each do |row|
+    csv << row;
+  end
+end
+print "<Deleted>"
+exit 0
+
